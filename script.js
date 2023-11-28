@@ -1,32 +1,50 @@
 const apiKey = "9e475dab5eaa3ba0f230e1277a054c68";
-const apiURL = "https://api.openweathermap.org/data/2.5/weather?";
+const apiURL = "https://api.openweathermap.org/data/2.5/weather?units=imperial&q=";
 const searchBox = document.querySelector(".search input")
 const searchBtn = document.querySelector(".search button")
+const weatherIcon = document.querySelector(".weather-icon")
 
 
 async function checkWeather(city){
-  const response = await fetch(`${apiUrl}q=${city}&appid=${apiKey}`)
-  const data = await response.json("weather-icon")
-  const weatherIcon = document.querySelector
+  const response = await fetch(apiURL+ city + `&appid=${apiKey}`)
 
-  console.log(data);
+  if (response.status == 404){
+    document.querySelector(".error").style.display="block"
+    document.querySelector(".weather").style.display="none"
+  } else {
+
+
+
+  var data = await response.json();
+
+
   document.querySelector(".city").innerHTML=data.name
-  document.querySelector(".temp").innerHTML=data.main.temp + "°F"
-  document.querySelector(".humidity").innerHTML=data.main.humidity + "%"
-  document.querySelector(".wind").innerHTML=data.wind.speed + "mp/h"
+  document.querySelector(".temp").innerHTML= Math.round(data.main.temp) + "°F";
+  document.querySelector(".humidity").innerHTML=data.main.humidity + "%";
+  document.querySelector(".wind").innerHTML=data.wind.speed + "mph";
 
   if(data.weather[0].main == "Clouds"){
-    weatherIcon.src ="images/clouds.png"
+    weatherIcon.src = "images/clouds.png";
   }
+  else if (data.weather[0].main == "Clear"){
+    weatherIcon.src = "images/clear.png";
+  }
+  else if (data.weather[0].main == "Rain"){
+    weatherIcon.src = "images/rain.png";
+  }
+  else if (data.weather[0].main == "Drizzle"){
+    weatherIcon.src = "images/drizzle.png";
+  }
+  else if (data.weather[0].main == "Mist"){
+    weatherIcon.src = "images/mist.png";
+  }
+
+  document.querySelector(".weather").style.display= "block";
+  document.querySelector(".error").style.display="none"
+
+}
 }
 
 searchBtn.addEventListener("click", () => {
   checkWeather(searchBox.value);
-})
-
-inputBox.addEventListener("keydown", function(e) {
-  if (e.key === "Enter"){
-    event.preventDefault();
-    checkWeather(searchBox.value)
-  }
 })
